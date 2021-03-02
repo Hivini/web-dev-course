@@ -1,0 +1,25 @@
+html {
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-top: 2%;
+}
+
+#mainTitle {
+    color: blue;
+}
+
+#showButton {
+    background-color: bisque;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+ul {
+    list-style-type: circle;
+}
+
+ul li {
+    font-size: 20px;
+}
+
+
