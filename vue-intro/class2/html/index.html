@@ -1,0 +1,273 @@
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Vue Semestre i</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+  <style>
+    .bueno {
+      font-weight: bold;
+      color: green;
+    }
+
+    .malo {
+      font-weight: bold;
+      color: red;
+    }
+
+    .cool {
+      color: blue;
+      font-size: 20px;
+    }
+
+    #offer {
+      display: inline;
+    }
+
+    #form>input {
+      display: flex;
+      margin-bottom: 10px;
+    }
+
+    .reto2 {
+      margin: 20px;
+    }
+
+    .delete {
+      background-color: rgba(211, 88, 88, 0.833);
+      margin-left: 10px;
+    }
+
+    .delete:hover {
+      background-color: rgba(211, 88, 88, 1);
+      cursor: pointer;
+    }
+
+    .ocultar {
+      display: none;
+    }
+
+    img {
+      height: 200px;
+      width: 200px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="lugardetrabajo">
+    {{nombre}}
+    <div class="reto2">
+      <h1>RETO 2</h1>
+      <div id='form'>
+        <input type="text" id="nameField" v-model="inputFields.author" placeholder="Name">
+        <input type="text" id="titleField" v-model="inputFields.title" placeholder="Title">
+        <div id="offer">
+          <input type="checkbox" value="true" v-model="inputFields.oferta">
+          <label for="oferta">Has offer</label>
+        </div>
+        <input type="number" id="cantidadField" v-model="inputFields.cantidad" placeholder="Quantity">
+        <input type="text" id="authorField" v-model="inputFields.editorial" placeholder="Editorial">
+        <button id="addBookButton" v-on:click="addBook" v-bind:class="{ocultar: editting}">Add book</button>
+        <button id="editBookButton" v-on:click="saveEdit" v-bind:class="{ocultar: !editting}">Save edit</button>
+      </div>
+    </div>
+
+    <ul v-for="libro in ordenarLibros">
+      <li>
+        {{libro.autor}} - {{libro.editorial}}: {{libro.titulo}} - {{ libro.cantidad}}
+        <span class="bueno" v-if="libro.oferta">OK</span>
+        <span class="malo" v-else>X</span>
+        <button class="edit" v-on:click="editBook(i)">Edit</button>
+        <button class="delete" v-on:click="deleteBook(i)">Delete</button>
+      </li>
+    </ul>
+
+    <div>
+      <button v-on:click="orderByName">Order by Name</button>
+      <button v-on:click="orderByQuantity">Order by Quantity</button>
+    </div>
+
+    <div>
+      <h1>PELICULAS</h1>
+      <ul v-for="(peli, i) in peliculas">
+        <li>
+          {{peli.name}} - {{peli.director}}
+        </li>
+      </ul>
+    </div>
+
+    <div>
+      <img v-bind:class="{ocultar: !shido}"
+        src="http://www.nationalcityca.gov/Home/ShowImage?id=5385&t=636689074931330000">
+      <img v-if="closesTomorrow"
+        src="https://c8.alamy.com/comp/PG6JDA/text-board-closed-tomorrow-banner-not-open-sign-for-store-PG6JDA.jpg">
+    </div>
+  </div>
+
+
+  <script type="text/javascript">
+    //Una instancia de Vue que manejará esa área del documento #lugardetrabajo
+
+    c = new Vue({
+      el: "#lugardetrabajo",
+      data: {
+        nombre: "La elegante vagancia",
+        peliculas: [],
+        libros: [{
+          autor: "Ray Bradbury",
+          titulo: "Fahrenheit 451",
+          oferta: false,
+          cantidad: 2,
+          editorial: "OK"
+        },
+        {
+          autor: "Arthur C. Clarke",
+          titulo: "El fin de la infancia",
+          oferta: true,
+          cantidad: 5,
+          editorial: "BORAKE"
+        },
+        {
+          autor: "El Chapo",
+          titulo: "El arte de disparar",
+          oferta: true,
+          cantidad: 3,
+          editorial: "ITESM"
+        }
+        ],
+        okidoki: true,
+        isCool: false,
+        inputFields: {
+          author: "",
+          title: "",
+          oferta: false,
+          cantidad: null,
+          editorial: ""
+        },
+        editedBook: 0,
+        editting: false,
+        isClosed: false,
+        shido: false,
+        closesTomorrow: false,
+        breakDay: 2,
+        todayDay: 0,
+        order: 0,
+      },
+      methods: {
+        sampleMethod: function () {
+          console.log("Hello");
+          this.libros.push(
+            {
+              autor: "Ramon",
+              titulo: "Ramon 2 El regreso",
+              oferta: false,
+              cantidad: 6,
+              editorial: "Ramon LLC"
+            }
+          );
+        },
+        method2: function () {
+          this.isCool = !this.isCool;
+        },
+        orderByQuantity: function () {
+          this.order = 1;
+        },
+        orderByName: function () {
+          this.order = 0;
+        },
+        addBook: function () {
+          console.log(this.inputFields);
+          if (this.inputFields.author == "" ||
+            this.inputFields.title == "" ||
+            this.inputFields.cantidad == null ||
+            this.inputFields.editorial == "") {
+            alert("All fields must be completed!");
+          } else {
+            this.libros.push(
+              {
+                autor: this.inputFields.author,
+                titulo: this.inputFields.title,
+                oferta: this.inputFields.oferta,
+                cantidad: this.inputFields.cantidad,
+                editorial: this.inputFields.editorial
+              }
+            );
+            this.cleanupInput();
+          }
+        },
+        cleanupInput() {
+          this.inputFields.author = "";
+          this.inputFields.title = "";
+          this.inputFields.cantidad = null;
+          this.inputFields.editorial = "";
+          this.inputFields.oferta = false;
+        },
+        deleteBook(i) {
+          this.libros.splice(i, 1);
+        },
+        editBook(i) {
+          this.inputFields.author = this.libros[i].autor;
+          this.inputFields.title = this.libros[i].titulo;
+          this.inputFields.cantidad = this.libros[i].cantidad;
+          this.inputFields.editorial = this.libros[i].editorial;
+          this.inputFields.oferta = this.libros[i].oferta;
+          this.editedBook = i;
+          this.editting = true;
+        },
+        saveEdit: function () {
+          this.libros.splice(this.editedBook, 1, {
+            autor: this.inputFields.author,
+            titulo: this.inputFields.title,
+            oferta: this.inputFields.oferta,
+            cantidad: this.inputFields.cantidad,
+            editorial: this.inputFields.editorial
+          });
+          this.editting = false;
+          this.cleanupInput();
+        }
+      },
+      computed: {
+        ordenarLibros: function () {
+          if (this.order == 0) {
+            this.libros = _.orderBy(this.libros, ['autor']);
+          } else if (this.order == 1) {
+            this.libros = _.orderBy(this.libros, ['cantidad']);
+          }
+          return this.libros;
+        }
+      },
+      watch: {
+        libros: function (d) {
+          console.log("Something change");
+        },
+        isClosed: function (d) {
+          // This is not useful at all and unnecessary.
+          console.log("is closed value: " + d);
+          this.shido = d;
+        },
+        todayDay: function (d) {
+          console.log("today is " + d);
+          if (d === this.breakDay - 1) {
+            this.closesTomorrow = true;
+            this.isClosed = false;
+          } else if (d === this.breakDay) {
+            this.isClosed = true;
+            this.closesTomorrow = false;
+          } else {
+            this.closesTomorrow = false;
+            this.isClosed = false;
+          }
+        },
+      },
+      created() {
+        console.log("instancia creada");
+        fetch("/getJson")
+          .then(response => response.json())
+          .then(data => this.peliculas = data);
+      },
+    });
+  </script>
+</body>
+</html>
