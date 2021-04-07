@@ -1,0 +1,126 @@
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Vue Semestre i</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+  <!-- Compressed CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.6.3/dist/css/foundation.min.css"
+    integrity="sha256-ogmFxjqiTMnZhxCqVmcqTvjfe1Y/ec4WaRj/aQPvn+I=" crossorigin="anonymous">
+  <!-- Compressed JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/foundation-sites@6.6.3/dist/js/foundation.min.js"
+    integrity="sha256-pRF3zifJRA9jXGv++b06qwtSqX1byFQOLjqa2PTEb2o=" crossorigin="anonymous"></script>
+
+  <style>
+    .bueno {
+      font-weight: bold;
+      color: green;
+    }
+
+    .malo {
+      font-weight: bold;
+      color: red;
+    }
+
+    .cool {
+      color: blue;
+      font-size: 20px;
+    }
+
+    #offer {
+      display: inline;
+    }
+
+    .reto2 {
+      margin: 20px;
+    }
+
+    .delete {
+      background-color: rgba(211, 88, 88, 0.833);
+      margin-left: 10px;
+    }
+
+    .delete:hover {
+      background-color: rgba(211, 88, 88, 1);
+      cursor: pointer;
+    }
+
+    .ocultar {
+      display: none;
+    }
+
+    img {
+      height: 200px;
+      width: 200px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="lugardetrabajo" class="grid-container">
+    <div class="">
+      <h1>Web Services</h1>
+      <h2>Actividad 1</h2>
+      <ul>
+        <li v-for="song in songsData">
+          {{song.title}} <b>Views:</b> {{song.views}}
+        </li>
+      </ul>
+      <h3>TOP 5</h3>
+      <ul>
+        <li v-for="song in top5Songs">
+          {{song.title}}
+        </li>
+      </ul>
+      <h2>Actividad 2</h2>
+      <ul>
+        <li v-for="user in orderedData">
+          {{user.first_name}} {{user.last_name}}
+        </li>
+      </ul>
+    </div>
+  </div>
+
+
+  <script type="text/javascript">
+    //Una instancia de Vue que manejará esa área del documento #lugardetrabajo
+
+    c = new Vue({
+      el: "#lugardetrabajo",
+      data: {
+        nombre: "La elegante vagancia",
+        orderedData: [],
+        songsData: [],
+        top5Songs: [],
+      },
+      created() {
+        console.log("instancia creada");
+        fetch("https://reqres.in/api/users?page=2")
+          .then(response => response.json())
+          .then(data => {
+            console.log(data);
+            this.orderedData = data.data;
+            this.orderedData.sort((a, b) => a.first_name.localeCompare(b.first_name));
+          });
+        fetch("http://localhost:8080/songs")
+          .then(response => response.json())
+          .then(data => {
+            this.songsData = data;
+          });
+        fetch("http://localhost:8080/songs/top5", {
+          headers: {
+            'limit': 5,
+            'sorted': true
+          }
+        })
+          .then(response => response.json())
+          .then(data => {
+            this.top5Songs = data;
+          });
+      },
+    });
+  </script>
+</body>
+
+</html>
